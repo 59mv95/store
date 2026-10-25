@@ -1,6 +1,7 @@
 package es.etg.daw.dawes.store.pokemon.infraestructure.mapper;
 
 import es.etg.daw.dawes.store.pokemon.application.command.CreatePokemonCommand;
+import es.etg.daw.dawes.store.pokemon.application.command.EditPokemonCommand;
 import es.etg.daw.dawes.store.pokemon.domain.model.Pokemon;
 import es.etg.daw.dawes.store.pokemon.infraestructure.web.mvc.dto.PokemonRequest;
 import es.etg.daw.dawes.store.pokemon.infraestructure.web.mvc.dto.PokemonResponse;
@@ -18,4 +19,17 @@ public class PokemonMapper {
                                 pokemon.getTipo(), pokemon.getFoto(), 
                                 pokemon.getPrecio(), pokemon.getCreatedAt());
     }
+
+
+    public static EditPokemonCommand toCommand(
+        int id,
+        PokemonRequest request) {
+
+        return new EditPokemonCommand(
+            id,
+            request.foto(),
+            request.precio()
+        );
+    }
+
 }
