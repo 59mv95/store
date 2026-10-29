@@ -1,3 +1,11 @@
+package es.etg.daw.dawes.store.pokemon.infraestructure.db.repository.mock;
+
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import es.etg.daw.dawes.store.pokemon.domain.model.Pokemon;
+
 public class PokemonFactory {
     
 

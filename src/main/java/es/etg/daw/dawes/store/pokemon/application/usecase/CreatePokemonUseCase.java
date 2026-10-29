@@ -4,8 +4,11 @@ import java.time.LocalDateTime;
 
 import es.etg.daw.dawes.store.pokemon.application.command.CreatePokemonCommand;
 import es.etg.daw.dawes.store.pokemon.domain.model.Pokemon;
+import es.etg.daw.dawes.store.pokemon.domain.repository.PokemonRepository;
 
 public class CreatePokemonUseCase {
+
+    public PokemonRepository pokemonRepository;
 
     public Pokemon create( CreatePokemonCommand comando){
         
@@ -17,7 +20,7 @@ public class CreatePokemonUseCase {
                                  .createdAt(LocalDateTime.now()).build();
 
         //TODO Faltaría la lógica sobre el pokemon, por ejemplo, almacenarlo en una base de datos.
-        return pokemon;
+        return pokemonRepository.save(pokemon);
     }
     
 }

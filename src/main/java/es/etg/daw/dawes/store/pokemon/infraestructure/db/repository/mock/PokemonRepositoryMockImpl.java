@@ -1,3 +1,17 @@
+package es.etg.daw.dawes.store.pokemon.infraestructure.db.repository.mock;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.stereotype.Repository;
+
+import es.etg.daw.dawes.store.pokemon.domain.model.Pokemon;
+import es.etg.daw.dawes.store.pokemon.domain.repository.PokemonRepository;
+
+
 @Repository 
 public class PokemonRepositoryMockImpl implements PokemonRepository{
 
