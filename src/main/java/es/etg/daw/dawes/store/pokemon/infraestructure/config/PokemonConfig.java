@@ -27,16 +27,6 @@ public class PokemonConfig {
     }
 
     @Bean 
-    public CreatePokemonUseCase createPokemonUseCase(){
-        return new CreatePokemonUseCase();
-    }
-
-    @Bean 
-    public CreatePokemonService createPokemonService(){
-        return new CreatePokemonService(createPokemonUseCase());
-    }
-
-    @Bean 
     public FindPokemonUseCase findPokemonUseCase(){
         return new FindPokemonUseCase();
     }

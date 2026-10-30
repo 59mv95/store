@@ -5,20 +5,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.etg.daw.dawes.store.pokemon.domain.model.Pokemon;
+import es.etg.daw.dawes.store.pokemon.domain.repository.PokemonRepository;
+import es.etg.daw.dawes.store.pokemon.domain.error.PokemonNotFoundException;
 
 public class FindPokemonUseCase {
 
+    public PokemonRepository pokemonRepository;
 
     public List<Pokemon> findAll(){
 
-        //TODO Habría que implementarlo con un acceso real a los datos. 
+        List<Pokemon> pokemons = pokemonRepository.getAll();
 
-        List<Pokemon> lista = new ArrayList<>();
-        lista.add(new Pokemon(1, "Pokemon1","tipo1","1", 1, LocalDateTime.now()));
-        lista.add(new Pokemon(2, "Pokemon2","tipo2","2", 2, LocalDateTime.now()));
-        lista.add(new Pokemon(2, "Pokemon3","tipo3","3", 3, LocalDateTime.now()));
+        if (pokemons.isEmpty())
+            throw new PokemonNotFoundException();
 
-        return lista;
+        return pokemonRepository.getAll();
 
     }
-}  
+}

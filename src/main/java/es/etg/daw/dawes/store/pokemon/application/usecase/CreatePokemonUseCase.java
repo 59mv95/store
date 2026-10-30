@@ -10,6 +10,10 @@ public class CreatePokemonUseCase {
 
     public PokemonRepository pokemonRepository;
 
+    public CreatePokemonUseCase(PokemonRepository pokemonRepository2) {
+        //TODO Auto-generated constructor stub
+    }
+
     public Pokemon create( CreatePokemonCommand comando){
         
         Pokemon pokemon = Pokemon.builder()
