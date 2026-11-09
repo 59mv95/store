@@ -31,3 +31,6 @@ Con esta práctica se pretende:
 · Probar endpoints junto al navegador y viendo como se ejecuta el código según avanzamos.
 · Gestionar dependencias mediante Spring 
 · Comprender la organización de nuestra aplicación web con Clean Architecture.
+
+## Trabajo de ANDREI
+Lo que he intentado seguir haciendo es sacar el modificar pokemon.
