@@ -6,3 +6,4 @@ public record PokemonResponse(int id, String nombre, String tipo, String foto,
     double precio, LocalDateTime createdAt ) {
     
 }
+

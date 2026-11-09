@@ -14,3 +14,4 @@ public class EditPokemonCommand {
     private String foto;
     private double precio;
 }
+
