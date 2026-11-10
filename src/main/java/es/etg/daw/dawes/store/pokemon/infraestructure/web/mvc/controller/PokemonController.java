@@ -37,37 +37,17 @@ public class PokemonController {
     private final EditPokemonService editPokemonService;
     private final DeletePokemonService deletePokemonService;
 
+    private final PokemonMapper pokemonMapper;
+    
+
     @PostMapping
     @ResponseBody
     public String createPokemon(PokemonRequest request) {
 
+
         CreatePokemonCommand comando =
-                PokemonMapper.toCommand(request);
+                pokemonMapper.toCommand(request);
 
-        Pokemon pokemon =
-                createPokemonService.createPokemon(comando);
-
-        return """
-            <!DOCTYPE html>
-            <html lang="es">
-              <head>
-                <meta charset="UTF-8">
-                <title>Pokemon</title>
-              </head>
-              <body>
-                <h1>Pokemon: %s - %s</h1>
-                <p>Tipo: %s</p>
-                <p>Precio: %s</p>
-                <p>Creado el: %s</p>
-              </body>
-            </html>
-            """.formatted(
-                pokemon.getId(),
-                pokemon.getNombre(),
-                pokemon.getTipo(),
-                pokemon.getPrecio(),
-                pokemon.getCreatedAt()
-            );
     }
 
     @GetMapping
@@ -76,7 +56,7 @@ public class PokemonController {
 
         return findPokemonService.findAll()
                 .stream()
-                .map(PokemonMapper::toResponse)
+          .map(pokemonMapper::toResponse)
                 .toList();
     }
 
@@ -84,11 +64,11 @@ public class PokemonController {
     @ResponseBody
     public PokemonResponse editPokemon(@PathVariable int id, @RequestBody PokemonRequest pokemonRequest) {
 
-        EditPokemonCommand comando = PokemonMapper.toCommand(id, pokemonRequest);
+        EditPokemonCommand comando = pokemonMapper.toCommand(id, pokemonRequest);
 
         Pokemon pokemon = editPokemonService.update(comando);
 
-        return PokemonMapper.toResponse(pokemon);
+        return pokemonMapper.toResponse(pokemon);
     }
 
     @DeleteMapping("/{id}")
