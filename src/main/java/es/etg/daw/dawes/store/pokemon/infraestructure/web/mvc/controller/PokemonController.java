@@ -34,15 +34,16 @@ public class PokemonController {
 
     private final CreatePokemonService createPokemonService;
     private final FindPokemonService findPokemonService;
-    private final EditPokemonService editPokemonService;
     private final DeletePokemonService deletePokemonService;
+    private final EditPokemonService editPokemonService;
 
+    //Agregamos el mapper que luego Springboot inyectará
+    private final PokemonMapper pokemonMapper;
     @PostMapping
     @ResponseBody
     public String createPokemon(PokemonRequest request) {
-
-        CreatePokemonCommand comando =
-                PokemonMapper.toCommand(request);
+        //Aquí usamos el mapper:
+        CreatePokemonCommand comando = pokemonMapper.toCommand(request);
 
         Pokemon pokemon =
                 createPokemonService.createPokemon(comando);

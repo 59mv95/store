@@ -34,3 +34,4 @@ Con esta práctica se pretende:
 
 ## Trabajo de ANDREI
 Lo que he intentado seguir haciendo es sacar el modificar pokemon.
+He integrado la parte de MapStruct pero POkemonController me da error, no esta acabado.
