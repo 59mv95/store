@@ -77,7 +77,7 @@ public class PokemonController {
 
         return findPokemonService.findAll()
                 .stream()
-                .map(PokemonMapper::toResponse)
+                .map(pokemonMapper::toResponse)
                 .toList();
     }
 
@@ -85,11 +85,11 @@ public class PokemonController {
     @ResponseBody
     public PokemonResponse editPokemon(@PathVariable int id, @RequestBody PokemonRequest pokemonRequest) {
 
-        EditPokemonCommand comando = PokemonMapper.toCommand(id, pokemonRequest);
+        EditPokemonCommand comando = pokemonMapper.toCommand(id, pokemonRequest);
 
         Pokemon pokemon = editPokemonService.update(comando);
 
-        return PokemonMapper.toResponse(pokemon);
+        return pokemonMapper.toResponse(pokemon);
     }
 
     @DeleteMapping("/{id}")

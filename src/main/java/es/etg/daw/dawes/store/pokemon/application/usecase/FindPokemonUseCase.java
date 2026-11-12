@@ -1,13 +1,14 @@
 package es.etg.daw.dawes.store.pokemon.application.usecase;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+
 import java.util.List;
 
 import es.etg.daw.dawes.store.pokemon.domain.model.Pokemon;
 import es.etg.daw.dawes.store.pokemon.domain.repository.PokemonRepository;
+import lombok.AllArgsConstructor;
 import es.etg.daw.dawes.store.pokemon.domain.error.PokemonNotFoundException;
 
+@AllArgsConstructor 
 public class FindPokemonUseCase {
 
     public PokemonRepository pokemonRepository;
@@ -19,7 +20,7 @@ public class FindPokemonUseCase {
         if (pokemons.isEmpty())
             throw new PokemonNotFoundException();
 
-        return pokemonRepository.getAll();
+        return pokemons;
 
     }
 }

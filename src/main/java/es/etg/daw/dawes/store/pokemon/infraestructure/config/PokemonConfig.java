@@ -28,12 +28,14 @@ public class PokemonConfig {
 
     @Bean 
     public FindPokemonUseCase findPokemonUseCase(){
-        return new FindPokemonUseCase();
+        return new FindPokemonUseCase(pokemonRepository);
     }
 
     @Bean 
     public FindPokemonService findPokemonService(){
         return new FindPokemonService(findPokemonUseCase());
     }
+
+    
     
 }
