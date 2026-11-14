@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Pokemons</title>
+    <style>
+        body { font-family: sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 2rem; }
+        th, td { border: 1px solid #ccc; padding: .4rem .6rem; text-align: left; }
+        th { background: #eee; }
+        input, select { padding: .3rem; }
+        input.corto { width: 6rem; }
+        button { padding: .3rem .7rem; cursor: pointer; }
+        .borrar { color: #b00; }
+        #mensaje { padding: .6rem; margin-bottom: 1rem; display: none; }
+        #mensaje.ok { display: block; background: #e6f6e6; border: 1px solid #7c7; }
+        #mensaje.error { display: block; background: #fbe9e9; border: 1px solid #d77; }
+        form label { display: inline-block; min-width: 5rem; }
+    </style>
+</head>
+<body>
+    <h1>Pokemons</h1>
+
+    <div id="mensaje"></div>
+
+    <h2>Listado</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th><th>Nombre</th><th>Tipo</th><th>Foto</th><th>Precio</th><th>Creado</th><th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tabla"></tbody>
+    </table>
+
+    <h2>Crear pokemon</h2>
+    <form id="formCrear">
+        <p><label for="nombre">Nombre:</label> <input id="nombre" name="nombre"></p>
+        <p><label for="tipo">Tipo:</label>
+            <select id="tipo" name="tipo">
+                <option value="">-- Selecciona un tipo --</option>
+                <option>Fuego</option><option>Agua</option><option>Planta</option>
+                <option>Eléctrico</option><option>Roca</option><option>Psíquico</option><option>Normal</option>
+            </select>
+        </p>
+        <p><label for="foto">Foto:</label> <input id="foto" name="foto"></p>
+        <p><label for="precio">Precio (€):</label> <input id="precio" name="precio" type="number" step="0.01" value="0"></p>
+        <button type="submit">Crear</button>
+    </form>
+
+    <script>
+        const URL_API = '/pokemons';
+
+        // Muestra un mensaje de éxito o error encima de la tabla
+        function mostrarMensaje(texto, esError) {
+            const div = document.getElementById('mensaje');
+            div.textContent = texto;
+            div.className = esError ? 'error' : 'ok';
+        }
+
+        // Los errores del servidor vienen en HTML: nos quedamos solo con el texto
+        async function textoDeError(respuesta) {
+            const html = await respuesta.text();
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            const items = [...doc.querySelectorAll('li, dd')].map(e => e.textContent.trim());
+            return items.length ? items.join(' · ') : 'Error ' + respuesta.status;
+        }
+
+        // Crea una celda de texto
+        function celda(texto) {
+            const td = document.createElement('td');
+            td.textContent = texto;
+            return td;
+        }
+
+        // LISTAR (GET /pokemons)
+        async function cargarPokemons() {
+            const tabla = document.getElementById('tabla');
+            tabla.innerHTML = '';
+
+            const respuesta = await fetch(URL_API);
+            if (respuesta.status === 404) {
+                tabla.innerHTML = '<tr><td colspan="7">No hay pokemons</td></tr>';
+                return;
+            }
+            if (!respuesta.ok) {
+                mostrarMensaje(await textoDeError(respuesta), true);
+                return;
+            }
+
+            const pokemons = await respuesta.json();
+            for (const p of pokemons) {
+                const fila = document.createElement('tr');
+                fila.appendChild(celda(p.id));
+                fila.appendChild(celda(p.nombre));
+                fila.appendChild(celda(p.tipo));
+
+                // Foto y precio se pueden editar directamente en la tabla
+                const inputFoto = document.createElement('input');
+                inputFoto.value = p.foto ?? '';
+                inputFoto.className = 'corto';
+                const tdFoto = document.createElement('td');
+                tdFoto.appendChild(inputFoto);
+                fila.appendChild(tdFoto);
+
+                const inputPrecio = document.createElement('input');
+                inputPrecio.type = 'number';
+                inputPrecio.step = '0.01';
+                inputPrecio.value = p.precio;
+                inputPrecio.className = 'corto';
+                const tdPrecio = document.createElement('td');
+                tdPrecio.appendChild(inputPrecio);
+                fila.appendChild(tdPrecio);
+
+                fila.appendChild(celda(p.createdAt ? p.createdAt.replace('T', ' ').substring(0, 19) : ''));
+
+                const tdAcciones = document.createElement('td');
+                const btnGuardar = document.createElement('button');
+                btnGuardar.textContent = 'Guardar';
+                btnGuardar.onclick = () => editarPokemon(p, inputFoto.value, inputPrecio.value);
+                const btnBorrar = document.createElement('button');
+                btnBorrar.textContent = 'Borrar';
+                btnBorrar.className = 'borrar';
+                btnBorrar.onclick = () => borrarPokemon(p.id, p.nombre);
+                tdAcciones.append(btnGuardar, ' ', btnBorrar);
+                fila.appendChild(tdAcciones);
+
+                tabla.appendChild(fila);
+            }
+        }
+
+        // CREAR (POST /pokemons, como un formulario normal)
+        document.getElementById('formCrear').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const datos = new URLSearchParams(new FormData(e.target));
+
+            const respuesta = await fetch(URL_API, { method: 'POST', body: datos });
+            if (respuesta.ok) {
+                mostrarMensaje('Pokemon creado', false);
+                e.target.reset();
+                cargarPokemons();
+            } else {
+                mostrarMensaje(await textoDeError(respuesta), true);
+            }
+        });
+
+        // EDITAR (PUT /pokemons/{id}, con JSON)
+        async function editarPokemon(p, foto, precio) {
+            const cuerpo = { nombre: p.nombre, tipo: p.tipo, foto: foto, precio: Number(precio) };
+
+            const respuesta = await fetch(`${URL_API}/${p.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(cuerpo)
+            });
+            if (respuesta.ok) {
+                mostrarMensaje(`Pokemon ${p.id} actualizado`, false);
+                cargarPokemons();
+            } else {
+                mostrarMensaje(await textoDeError(respuesta), true);
+            }
+        }
+
+        // BORRAR (DELETE /pokemons/{id})
+        async function borrarPokemon(id, nombre) {
+            if (!confirm(`¿Borrar el pokemon ${id} - ${nombre}?`)) return;
+
+            const respuesta = await fetch(`${URL_API}/${id}`, { method: 'DELETE' });
+            if (respuesta.ok) {
+                mostrarMensaje(`Pokemon ${id} borrado`, false);
+                cargarPokemons();
+            } else {
+                mostrarMensaje(await textoDeError(respuesta), true);
+            }
+        }
+
+        cargarPokemons();
+    </script>
+</body>
+</html>
