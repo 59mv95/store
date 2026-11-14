@@ -32,7 +32,3 @@ Con esta práctica se pretende:
 · Gestionar dependencias mediante Spring 
 · Comprender la organización de nuestra aplicación web con Clean Architecture.
 
-## Trabajo de ANDREI
-Lo que he intentado seguir haciendo es sacar el modificar pokemon.
-He integrado la parte de MapStruct pero POkemonController me da error, no esta acabado.
-Terminado la parte de Mapstruct, hay que mirar rutas-delete y modificar pokemons porque lo tenemos a medias.
