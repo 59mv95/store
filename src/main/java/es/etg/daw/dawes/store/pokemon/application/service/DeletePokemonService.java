@@ -1,16 +1,17 @@
-
 package es.etg.daw.dawes.store.pokemon.application.service;
 
-import es.etg.daw.dawes.store.pokemon.application.usecase.DeletePokemonUseCase;
 import org.springframework.stereotype.Service;
 
-@Service
-public class DeletePokemonService implements DeletePokemonUseCase {
+import es.etg.daw.dawes.store.pokemon.application.usecase.DeletePokemonUseCase;
+import lombok.RequiredArgsConstructor;
 
-    @Override
+@RequiredArgsConstructor
+@Service
+public class DeletePokemonService {
+
+    private final DeletePokemonUseCase deletePokemonUseCase;
+
     public void delete(int id) {
-        throw new UnsupportedOperationException(
-            "Hay que implementar el borrado según el repositorio del proyecto"
-        );
+        deletePokemonUseCase.delete(id);
     }
 }
