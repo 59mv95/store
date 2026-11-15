@@ -13,14 +13,12 @@ import es.etg.daw.dawes.store.pokemon.domain.error.EntityNotFoundException;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Excepciones de tipo NullPointer de toda la aplicación -> 500
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<String> nullPointerHandler(NullPointerException npe) {
         CustomResponse cr = new CustomResponse(LocalDateTime.now(), HttpStatus.INTERNAL_SERVER_ERROR, npe.getMessage());
         return buildResponse(cr);
     }
 
-    // Entidades no encontradas (PokemonNotFoundException hereda de ésta) -> 404
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<String> entityNotFoundHandler(EntityNotFoundException enfe) {
         CustomResponse cr = new CustomResponse(LocalDateTime.now(), HttpStatus.NOT_FOUND, enfe.getMessage());

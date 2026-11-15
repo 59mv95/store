@@ -10,7 +10,6 @@ public class NombradoPokemonValidator implements ConstraintValidator<NombradoPok
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        // El nombre no es nulo, ni vacío, ni tiene blancos ni saltos de línea
         if(value == null || value.length()==0 || value.contains(STR_BLANCO) || value.contains(STR_SALTO))
             return false;
 

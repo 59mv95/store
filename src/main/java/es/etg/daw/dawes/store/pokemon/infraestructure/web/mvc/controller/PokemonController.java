@@ -42,7 +42,6 @@ public class PokemonController {
     private final EditPokemonService editPokemonService;
     private final DeletePokemonService deletePokemonService;
 
-    // Mapper generado por MapStruct, lo inyecta Spring
     private final PokemonMapper pokemonMapper;
 
     @PostMapping
@@ -105,7 +104,6 @@ public class PokemonController {
         return ResponseEntity.noContent().build();
     }
 
-    // Captura los errores de validación y devuelve un html con el listado de errores
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody

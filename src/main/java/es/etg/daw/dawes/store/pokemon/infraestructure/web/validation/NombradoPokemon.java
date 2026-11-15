@@ -14,12 +14,9 @@ import jakarta.validation.Payload;
 @Constraint(validatedBy = NombradoPokemonValidator.class)
 @Documented
 public @interface NombradoPokemon {
-    // Mensaje por defecto
     String message() default "{es.etg.daw.dawes.store.pokemon.infraestructure.web.validation.NombradoPokemon}";
 
-    // Permite agrupar validaciones (por ejemplo, creación vs. actualización)
     Class<?>[] groups() default {};
 
-    // Metadatos adicionales del resultado de la validación
     Class<? extends Payload>[] payload() default {};
 }

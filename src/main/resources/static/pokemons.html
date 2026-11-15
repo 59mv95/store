@@ -5,9 +5,9 @@
     <title>Gestión de Pokemons</title>
     <style>
         body { font-family: sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
-        table { border-collapse: collapse; width: 100%; margin-bottom: 2rem; }
+        table { border-collapse: collapse; width: 100%; }
         th, td { border: 1px solid #ccc; padding: .4rem .6rem; text-align: left; }
-        th { background: #eee; }
+        th { background: #eee; position: sticky; top: 0; }
         input, select { padding: .3rem; }
         input.corto { width: 6rem; }
         button { padding: .3rem .7rem; cursor: pointer; }
@@ -15,7 +15,12 @@
         #mensaje { padding: .6rem; margin-bottom: 1rem; display: none; }
         #mensaje.ok { display: block; background: #e6f6e6; border: 1px solid #7c7; }
         #mensaje.error { display: block; background: #fbe9e9; border: 1px solid #d77; }
-        form label { display: inline-block; min-width: 5rem; }
+
+        #formCrear { display: flex; flex-wrap: wrap; gap: .8rem; align-items: flex-end;
+                     padding: 1rem; border: 1px solid #ccc; background: #fafafa; margin-bottom: 1.5rem; }
+        #formCrear label { display: flex; flex-direction: column; font-size: .9rem; gap: .2rem; }
+
+        .contenedor-tabla { max-height: 60vh; overflow-y: auto; border: 1px solid #ccc; }
     </style>
 </head>
 <body>
@@ -23,42 +28,48 @@
 
     <div id="mensaje"></div>
 
-    <h2>Listado</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Id</th><th>Nombre</th><th>Tipo</th><th>Foto</th><th>Precio</th><th>Creado</th><th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody id="tabla"></tbody>
-    </table>
-
     <h2>Crear pokemon</h2>
     <form id="formCrear">
-        <p><label for="nombre">Nombre:</label> <input id="nombre" name="nombre"></p>
-        <p><label for="tipo">Tipo:</label>
+        <label>Nombre
+            <input id="nombre" name="nombre">
+        </label>
+        <label>Tipo
             <select id="tipo" name="tipo">
-                <option value="">-- Selecciona un tipo --</option>
+                <option value="">-- Selecciona --</option>
                 <option>Fuego</option><option>Agua</option><option>Planta</option>
                 <option>Eléctrico</option><option>Roca</option><option>Psíquico</option><option>Normal</option>
             </select>
-        </p>
-        <p><label for="foto">Foto:</label> <input id="foto" name="foto"></p>
-        <p><label for="precio">Precio (€):</label> <input id="precio" name="precio" type="number" step="0.01" value="0"></p>
+        </label>
+        <label>Foto
+            <input id="foto" name="foto">
+        </label>
+        <label>Precio (€)
+            <input id="precio" name="precio" type="number" step="0.01" value="0" class="corto">
+        </label>
         <button type="submit">Crear</button>
     </form>
+
+    <h2>Listado</h2>
+    <div class="contenedor-tabla">
+        <table>
+            <thead>
+                <tr>
+                    <th>Id</th><th>Nombre</th><th>Tipo</th><th>Foto</th><th>Precio</th><th>Creado</th><th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tabla"></tbody>
+        </table>
+    </div>
 
     <script>
         const URL_API = '/pokemons';
 
-        // Muestra un mensaje de éxito o error encima de la tabla
         function mostrarMensaje(texto, esError) {
             const div = document.getElementById('mensaje');
             div.textContent = texto;
             div.className = esError ? 'error' : 'ok';
         }
 
-        // Los errores del servidor vienen en HTML: nos quedamos solo con el texto
         async function textoDeError(respuesta) {
             const html = await respuesta.text();
             const doc = new DOMParser().parseFromString(html, 'text/html');
@@ -66,14 +77,12 @@
             return items.length ? items.join(' · ') : 'Error ' + respuesta.status;
         }
 
-        // Crea una celda de texto
         function celda(texto) {
             const td = document.createElement('td');
             td.textContent = texto;
             return td;
         }
 
-        // LISTAR (GET /pokemons)
         async function cargarPokemons() {
             const tabla = document.getElementById('tabla');
             tabla.innerHTML = '';
@@ -95,7 +104,6 @@
                 fila.appendChild(celda(p.nombre));
                 fila.appendChild(celda(p.tipo));
 
-                // Foto y precio se pueden editar directamente en la tabla
                 const inputFoto = document.createElement('input');
                 inputFoto.value = p.foto ?? '';
                 inputFoto.className = 'corto';
@@ -129,7 +137,6 @@
             }
         }
 
-        // CREAR (POST /pokemons, como un formulario normal)
         document.getElementById('formCrear').addEventListener('submit', async (e) => {
             e.preventDefault();
             const datos = new URLSearchParams(new FormData(e.target));
@@ -138,13 +145,15 @@
             if (respuesta.ok) {
                 mostrarMensaje('Pokemon creado', false);
                 e.target.reset();
-                cargarPokemons();
+                await cargarPokemons();
+                // Baja el scroll de la tabla para ver el pokemon nuevo
+                const contenedor = document.querySelector('.contenedor-tabla');
+                contenedor.scrollTop = contenedor.scrollHeight;
             } else {
                 mostrarMensaje(await textoDeError(respuesta), true);
             }
         });
 
-        // EDITAR (PUT /pokemons/{id}, con JSON)
         async function editarPokemon(p, foto, precio) {
             const cuerpo = { nombre: p.nombre, tipo: p.tipo, foto: foto, precio: Number(precio) };
 
@@ -161,7 +170,6 @@
             }
         }
 
-        // BORRAR (DELETE /pokemons/{id})
         async function borrarPokemon(id, nombre) {
             if (!confirm(`¿Borrar el pokemon ${id} - ${nombre}?`)) return;
 

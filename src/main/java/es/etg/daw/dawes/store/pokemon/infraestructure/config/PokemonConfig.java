@@ -14,54 +14,50 @@ import es.etg.daw.dawes.store.pokemon.application.usecase.FindPokemonUseCase;
 import es.etg.daw.dawes.store.pokemon.domain.repository.PokemonRepository;
 import lombok.RequiredArgsConstructor;
 
-@Configuration
-@RequiredArgsConstructor
+@Configuration 
+@RequiredArgsConstructor 
 public class PokemonConfig {
 
-    // Una única instancia del repositorio compartida por todos los casos de uso
     private final PokemonRepository pokemonRepository;
 
-    // Crear
-    @Bean
+    @Bean 
     public CreatePokemonUseCase createPokemonUseCase(){
         return new CreatePokemonUseCase(pokemonRepository);
     }
 
-    @Bean
+    @Bean 
     public CreatePokemonService createPokemonService(){
         return new CreatePokemonService(createPokemonUseCase());
     }
 
-    // Listar
-    @Bean
+    @Bean 
     public FindPokemonUseCase findPokemonUseCase(){
         return new FindPokemonUseCase(pokemonRepository);
     }
 
-    @Bean
+    @Bean 
     public FindPokemonService findPokemonService(){
         return new FindPokemonService(findPokemonUseCase());
     }
 
-    // Editar
-    @Bean
+    @Bean 
     public EditPokemonUseCase editPokemonUseCase(){
         return new EditPokemonUseCase(pokemonRepository);
     }
 
-    @Bean
+    @Bean 
     public EditPokemonService editPokemonService(){
         return new EditPokemonService(editPokemonUseCase());
     }
 
-    // Borrar
-    @Bean
+    @Bean 
     public DeletePokemonUseCase deletePokemonUseCase(){
         return new DeletePokemonUseCase(pokemonRepository);
     }
 
-    @Bean
+    @Bean 
     public DeletePokemonService deletePokemonService(){
         return new DeletePokemonService(deletePokemonUseCase());
     }
+    
 }

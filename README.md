@@ -1,6 +1,6 @@
 # Tienda de Pokémon
 
-Este proyecto es una aplicación web hecha con Java y Spring Boot para gestionar los Pokémon de una tienda. La hemos desarrollado en la asignatura de Desarrollo Web en Entorno Servidor (2º DAW).
+Este proyecto es una aplicación web hecha con Java y Spring Boot para gestionar los Pokémon de una tienda.
 
 Con la aplicación se pueden crear, listar, modificar y eliminar Pokémon haciendo peticiones HTTP.
 
@@ -17,13 +17,13 @@ Con la aplicación se pueden crear, listar, modificar y eliminar Pokémon hacien
 
 ## Arquitectura del proyecto
 
-Para organizar el proyecto hemos usado **Clean Architecture** y **Vertical Slicing**. Esto quiere decir que el código se separa por áreas de negocio (de momento solo tenemos `pokemon`) y, dentro de cada área, por capas:
+Para organizar el proyecto hemos usado Clean Architecture y Vertical Slicing. Esto quiere decir que el código se separa por áreas de negocio (de momento solo tenemos `pokemon`) y, dentro de cada área, por capas:
 
-- **Domain**: es la parte más importante. Aquí está el modelo `Pokemon`, los repositorios (solo las interfaces) y las excepciones como `PokemonNotFoundException`.
-- **Application**: aquí están los comandos, los casos de uso y los servicios. Es donde se ejecuta la lógica de la aplicación.
-- **Infrastructure**: aquí está lo que conecta con el exterior: el controlador, los DTO, el mapper, la configuración de Spring, las validaciones y el repositorio mock.
+- Domain: aquí está el modelo `Pokemon`, los repositorios (solo las interfaces) y las excepciones como `PokemonNotFoundException`.
+- Aplication: aquí están los comandos, los casos de uso y los servicios. Es donde se ejecuta la lógica de la aplicación.
+- Infraestructure: aquí está lo que conecta con el exterior: el controlador, los DTO, el mapper, la configuración de Spring, las validaciones y el repositorio mock.
 
-También tenemos una carpeta **common** para las cosas que sirven para toda la aplicación, como el manejo global de errores.
+También tenemos una carpeta common para las cosas que sirven para toda la aplicación, como el manejo global de errores.
 
 ### Estructura de carpetas
 
@@ -55,7 +55,7 @@ store
 Cuando el usuario hace una petición, el recorrido es este:
 
 ```
-Controlador → Mapper → Servicio → Caso de uso → Repositorio
+Controlador -> Mapper -> Servicio -> Caso de uso -> Repositorio
 ```
 
 1. El controlador recibe los datos (`PokemonRequest`) y comprueba que son válidos.
@@ -79,7 +79,7 @@ Cuando se crea un Pokémon se comprueba que:
 
 - El nombre no esté vacío y no tenga espacios ni saltos de línea. Esta validación la hemos hecho nosotros con la anotación `@NombradoPokemon`.
 - El tipo no esté vacío.
-- El precio esté entre 0 y 100 €.
+- El precio esté entre 1 y 100 €. Hemos decidido ponerlo en 1 porque tener un pokemon que cuesta 0€(gratis) no nos parecía correcto.
 
 Los mensajes de error están en el fichero `messages.properties`.
 
@@ -87,8 +87,8 @@ Los mensajes de error están en el fichero `messages.properties`.
 
 Hemos creado la clase `GlobalExceptionHandler` con `@ControllerAdvice` para controlar los errores desde un solo sitio:
 
-- Si no se encuentra un Pokémon, se devuelve un error **404**.
-- Si hay un `NullPointerException`, se devuelve un error **500**.
+- Si no se encuentra un Pokémon, se devuelve un error 404.
+- Si hay un `NullPointerException`, se devuelve un error 500.
 
 Así el usuario ve una página de error clara y no se muestran detalles internos del código.
 
@@ -113,7 +113,7 @@ De momento no usamos base de datos. Los Pokémon se guardan en memoria con un re
 Desde el navegador:
 
 - http://localhost:8080/pokemons → ver la lista de Pokémon
-- http://localhost:8080/pokemons.html → listar, crear, editar y borrar desde una página
+- http://localhost:8080/pokemons.html → listar, crear, editar y borrar desde una página. Hemos querido añadir una página html en la que podamos hacer todas las acciones que tiene la aplicaión.
 - http://localhost:8080/formulario-crear-pokemon.html → crear un Pokémon
 - http://localhost:8080/formulario-editar-pokemon.html → editar un Pokémon
 - http://localhost:8080/formulario-borrar-pokemon.html → borrar un Pokémon
@@ -142,4 +142,4 @@ Con esta práctica hemos aprendido a:
 
 - Usar una base de datos real en lugar del repositorio mock.
 - Usar plantillas HTML en lugar de escribir el HTML en el controlador.
-- Añadir más áreas a la tienda, como entrenadores o ventas.
+- Añadir más áreas a la tienda, como usuarios(entrenadores) o ventas.

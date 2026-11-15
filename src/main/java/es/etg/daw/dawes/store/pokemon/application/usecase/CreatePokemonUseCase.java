@@ -10,10 +10,10 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class CreatePokemonUseCase {
 
-    private final PokemonRepository pokemonRepository;
+    public PokemonRepository pokemonRepository;
 
-    public Pokemon create(CreatePokemonCommand comando){
-
+    public Pokemon create( CreatePokemonCommand comando){
+        
         Pokemon pokemon = Pokemon.builder()
                                  .nombre(comando.nombre())
                                  .tipo(comando.tipo())
@@ -23,4 +23,5 @@ public class CreatePokemonUseCase {
 
         return pokemonRepository.save(pokemon);
     }
+    
 }
